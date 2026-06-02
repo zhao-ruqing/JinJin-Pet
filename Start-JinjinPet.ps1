@@ -1,4 +1,4 @@
-$ErrorActionPreference = "Stop"
+﻿$ErrorActionPreference = "Stop"
 $AppDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $Script = Join-Path $AppDir "JinjinPet.ps1"
 
@@ -8,6 +8,5 @@ Get-CimInstance Win32_Process |
 
 Start-Process powershell.exe -WindowStyle Hidden -ArgumentList @(
     "-NoProfile",
-    "-ExecutionPolicy", "Bypass",
     "-File", "`"$Script`""
 )

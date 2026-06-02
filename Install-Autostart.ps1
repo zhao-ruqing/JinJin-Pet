@@ -1,16 +1,17 @@
-$ErrorActionPreference = "Stop"
+﻿$ErrorActionPreference = "Stop"
 $AppDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$StartScript = Join-Path $AppDir "Start-JinjinPet.ps1"
+$StartScript = Join-Path $AppDir "Start-JinjinPet.vbs"
+$TaskName = "Jinjin Pet"
+
 $StartupDir = [Environment]::GetFolderPath("Startup")
-$ShortcutPath = Join-Path $StartupDir "Jinjin Pet.lnk"
+$OldShortcutPath = Join-Path $StartupDir "Jinjin Pet.lnk"
+if (Test-Path -LiteralPath $OldShortcutPath) {
+    Remove-Item -LiteralPath $OldShortcutPath -Force
+}
 
-$Shell = New-Object -ComObject WScript.Shell
-$Shortcut = $Shell.CreateShortcut($ShortcutPath)
-$Shortcut.TargetPath = "powershell.exe"
-$Shortcut.Arguments = "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$StartScript`""
-$Shortcut.WorkingDirectory = $AppDir
-$Shortcut.WindowStyle = 7
-$Shortcut.Description = "Start Jinjin Pet"
-$Shortcut.Save()
+$Action = New-ScheduledTaskAction -Execute "wscript.exe" -Argument "`"$StartScript`""
+$Trigger = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
+$Settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit ([TimeSpan]::Zero)
+Register-ScheduledTask -TaskName $TaskName -Action $Action -Trigger $Trigger -Settings $Settings -Description "Start Jinjin Pet at user logon" -Force | Out-Null
 
-Write-Output "Installed autostart shortcut: $ShortcutPath"
+Write-Output "Installed scheduled task: $TaskName"
