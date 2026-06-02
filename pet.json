@@ -1,0 +1,6 @@
+{
+  "id": "custom-codex-pet",
+  "displayName": "Custom Codex Pet",
+  "description": "A chibi coding companion built from the supplied avatar images.",
+  "spritesheetPath": "spritesheet.png"
+}
