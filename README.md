@@ -20,7 +20,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Stop-JinjinPet.ps1
 
 - 左键拖拽移动，滚轮缩放，右键打开菜单
 - 自动动作开启时，会根据前台窗口自动切换状态（编程工具 → coding，浏览器/聊天 → thinking，其他 → idle）
-- 鼠标悬停 → happy-wave，按下 Delete → surprised，鼠标静止 2 秒 → sleepy
+- 鼠标悬停 → happy-wave，按下 Backspace → surprised，鼠标静止 2 秒 → sleepy
 
 ## 开机自启
 
