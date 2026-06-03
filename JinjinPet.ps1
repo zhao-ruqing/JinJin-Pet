@@ -80,6 +80,12 @@ public static class ForegroundWindowInfo {
 
 public static class InputInfo {
     [StructLayout(LayoutKind.Sequential)]
+    public struct LASTINPUTINFO {
+        public uint cbSize;
+        public uint dwTime;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
     public struct POINT {
         public int X;
         public int Y;
@@ -91,8 +97,18 @@ public static class InputInfo {
     [DllImport("user32.dll")]
     private static extern bool GetCursorPos(out POINT point);
 
+    [DllImport("user32.dll")]
+    private static extern bool GetLastInputInfo(ref LASTINPUTINFO info);
+
     public static bool IsBackspaceDown() {
         return (GetAsyncKeyState(0x08) & 0x8000) != 0;
+    }
+
+    public static uint GetIdleMilliseconds() {
+        LASTINPUTINFO info = new LASTINPUTINFO();
+        info.cbSize = (uint)Marshal.SizeOf(typeof(LASTINPUTINFO));
+        if (!GetLastInputInfo(ref info)) return 0;
+        return unchecked((uint)Environment.TickCount - info.dwTime);
     }
 
     public static string CursorPosition() {
@@ -113,10 +129,8 @@ if ($Scale -gt $MaxScale) { $Scale = $MaxScale }
 $State = if ($Rows.ContainsKey([string]$Config.state)) { [string]$Config.state } else { "idle" }
 $AutoState = if ($null -eq $Config.autoState) { $true } else { [bool]$Config.autoState }
 $Hovering = $false
-$LastCursorPosition = [InputInfo]::CursorPosition()
-$LastMouseMoveAt = [DateTime]::UtcNow
 $BackspaceStateUntil = [DateTime]::MinValue
-$MouseIdleDelayMs = 1800
+$FailedIdleDelayMs = 10000
 
 $Window = New-Object System.Windows.Window
 $Window.Title = "Jinjin Pet"
@@ -325,19 +339,14 @@ $AutoTimer = New-Object System.Windows.Threading.DispatcherTimer
 $AutoTimer.Interval = [TimeSpan]::FromMilliseconds(250)
 $AutoTimer.Add_Tick({
     $Now = [DateTime]::UtcNow
-    $CursorPosition = [InputInfo]::CursorPosition()
-    if ($CursorPosition -and $CursorPosition -ne $script:LastCursorPosition) {
-        $script:LastCursorPosition = $CursorPosition
-        $script:LastMouseMoveAt = $Now
-    }
     if ([InputInfo]::IsBackspaceDown()) {
         $script:BackspaceStateUntil = $Now.AddMilliseconds(850)
     }
     if ($script:AutoState -and -not $script:Hovering) {
         if ($Now -lt $script:BackspaceStateUntil) {
             Set-PetState "surprised"
-        } elseif (($Now - $script:LastMouseMoveAt).TotalMilliseconds -ge $MouseIdleDelayMs) {
-            Set-PetState "sleepy"
+        } elseif ([InputInfo]::GetIdleMilliseconds() -ge $FailedIdleDelayMs) {
+            Set-PetState "failed"
         } else {
             Set-PetState (Get-AutoPetState)
         }
