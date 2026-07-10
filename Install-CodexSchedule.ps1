@@ -6,7 +6,7 @@ $AppDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $StartScript = Join-Path $AppDir "Start-CodexPlusPlus.vbs"
 $CodexExe = "D:\ALL-APP\codex++\codex-plus-plus.exe"
 $TaskName = "Jinjin Pet - Codex++"
-$LaunchTime = "18:10"
+$LaunchTime = "17:58"
 
 # 启动前检查 Codex++ 与 VBS 启动脚本是否存在
 if (-not (Test-Path -LiteralPath $CodexExe)) {

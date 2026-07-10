@@ -1,4 +1,4 @@
-# 金金宠物版
+# 进进宠物
 
 桌面宠物，透明置顶悬浮，右键菜单切换状态。
 
@@ -29,7 +29,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-Autostart.ps1 
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Uninstall-Autostart.ps1   # 移除
 ```
 
-## 工作日 18:10 自动打开 Codex++
+## 工作日 17:58 自动打开 Codex++
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-CodexSchedule.ps1     # 添加
