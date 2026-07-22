@@ -29,6 +29,13 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install-Autostart.ps1 
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Uninstall-Autostart.ps1   # 移除
 ```
 
+默认使用与 Codex++ 相同的 Interactive 主体方式。若要切回旧方式，编辑 `Install-Autostart.ps1` 顶部的 `$AutostartMode`：
+
+- `"codex"`：显式 Interactive 主体（默认，更稳）
+- `"legacy"`：原有 AtLogOn 方式
+
+改完后重新运行 `Install-Autostart.ps1` 即可生效。
+
 ## 工作日 17:58 自动打开 Codex++
 
 ```powershell
